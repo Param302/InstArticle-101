@@ -1,5 +1,4 @@
 import json
-import re
 import time
 import gspread
 import streamlit as st
@@ -23,8 +22,6 @@ def get_articles():
     client = get_gsheet_client()
     sheet = client.open("Streamlit Article 101").sheet1
     records = sheet.get_all_records()
-    print(records)
-    print(type(records))
     return records
 
 @st.cache_resource
@@ -32,9 +29,6 @@ def get_articles_cache():
     return get_articles()
 
 def save_article(title, author, content):
-    print("Saving article...")
-    print("Title is", title)
-    print("Author is", author)
     client = get_gsheet_client()
     sheet = client.open("Streamlit Article 101").sheet1
     sheet.append_row([title, author, content])
@@ -62,9 +56,7 @@ def save_article_dialog():
     code = st.text_input("Enter secret code")
     yes, no = st.columns([1, 1])
     if yes.button("Yes", type="primary", use_container_width=True):
-        if code == int(st.secrets["article"]["code"]):
-        # if code == "1234":
-            print("YESSS")
+        if code == str(st.secrets["article"]["code"]):
             status.info("Saving article...")
             save_article(title, author, st.session_state.input_article)
             status.success("Article saved successfully!")
@@ -129,7 +121,7 @@ else:
         st.subheader("Editor")
         tt, at = st.columns([2, 1])
 
-        title = tt.text_input("**Title**", key="title")
+        title = tt.text_input("**Title**", key="title", max_chars=40)
         author = at.text_input("**Your Name**", key="author")
         st.text_area("Write here",
                      label_visibility="collapsed",
