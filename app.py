@@ -37,13 +37,12 @@ def save_article(title, author, content):
     print("Author is", author)
     client = get_gsheet_client()
     sheet = client.open("Streamlit Article 101").sheet1
-    article_id = st.session_state.articles[-1]["Id"] + 1
-    sheet.append_row([article_id, title, author, content])
+    sheet.append_row([title, author, content])
     update_list()
 
 
-def get_article(article_id):
-    return [article for article in st.session_state.articles if article["Id"] == article_id][0]
+def get_article(article_title):
+    return [article for article in st.session_state.articles if article["Title"] == article_title][0]
 
 def update_list():
     st.session_state.articles = get_articles()
@@ -63,20 +62,19 @@ def save_article_dialog():
     code = st.text_input("Enter secret code")
     yes, no = st.columns([1, 1])
     if yes.button("Yes", type="primary", use_container_width=True):
-        # if code == int(st.secrets["article"]["code"]):
-        if code == "1234":
+        if code == int(st.secrets["article"]["code"]):
+        # if code == "1234":
             print("YESSS")
             status.info("Saving article...")
             save_article(title, author, st.session_state.input_article)
-            # time.sleep(5)
             status.success("Article saved successfully!")
-            time.sleep(2)
+            time.sleep(1)
             st.rerun()
         elif code and code != "1234":
             status.error("Invalid secret code")
     if no.button("No", use_container_width=True):
         status.warning("Article not saved")
-        time.sleep(2)
+        time.sleep(1)
         st.rerun()
 
 
@@ -91,11 +89,11 @@ article_heading, btn = st.sidebar.columns([3, 1], vertical_alignment="bottom")
 article_heading.title("Articles")
 btn.button("⟳", type="secondary", on_click=update_list)
 if "display_article" not in st.session_state:
-    st.session_state.display_article = st.session_state.articles[0]["Id"]
+    st.session_state.display_article = st.session_state.articles[0]["Title"]
 
 for article in st.session_state.articles:
-    if st.sidebar.button(article["Title"], key=article["Id"], type="tertiary", use_container_width=True, on_click=show_article):
-        st.session_state.display_article = article["Id"]
+    if st.sidebar.button(article["Title"], key=article["Title"], type="tertiary", use_container_width=True, on_click=show_article):
+        st.session_state.display_article = article["Title"]
 
 if "preview_article" not in st.session_state:
     st.session_state.preview_article = ""
@@ -142,4 +140,4 @@ else:
         st.header(title)
         st.markdown(st.session_state.input_article, unsafe_allow_html=True)
 
-    container.columns([1, 1, 1])[1].button("Save", key="save_article", type="primary", use_container_width=True, disabled=bool(not (st.session_state.input_article and title)),  on_click=save_article_dialog)
+    container.columns([1, 1, 1])[1].button("Save Article", key="save_article", type="primary", use_container_width=True, disabled=bool(not (st.session_state.input_article and title)),  on_click=save_article_dialog)
