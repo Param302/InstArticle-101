@@ -1,22 +1,12 @@
 import time
-from click import style
 import streamlit as st
 from streamlit_option_menu import option_menu
 
-st.set_page_config("Article 101", page_icon=":newspaper:", layout="wide")
+def show_article():
+    st.session_state.display_article = article
+    if tab == "Write":
+        st.sidebar.info("Please switch to the 'Read' tab to view the article")
 
-# sidebar
-st.sidebar.title("Articles")
-articles = ["Article 1", "Article 2", "Article 3"]
-if "display_article" not in st.session_state:
-    st.session_state.display_article = articles[0]
-
-for article in articles:
-    if st.sidebar.button(article, key=article, type="tertiary", use_container_width=True):
-        st.session_state.display_article = article
-
-if "preview_article" not in st.session_state:
-    st.session_state.preview_article = ""
 def update_preview():
     st.session_state.preview_article = st.session_state.input_article
 
@@ -35,6 +25,22 @@ def save_article():
         status.warning("Article not saved")
         time.sleep(2)
         st.rerun()
+
+
+st.set_page_config("Article 101", page_icon=":newspaper:", layout="wide")
+
+# sidebar
+st.sidebar.title("Articles")
+articles = ["Article 1", "Article 2", "Article 3"]
+if "display_article" not in st.session_state:
+    st.session_state.display_article = articles[0]
+
+for article in articles:
+    if st.sidebar.button(article, key=article, type="tertiary", use_container_width=True, on_click=show_article):
+        st.session_state.display_article = article
+
+if "preview_article" not in st.session_state:
+    st.session_state.preview_article = ""
 
 tab = option_menu(
     "Article 101", 
