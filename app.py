@@ -59,7 +59,7 @@ def save_article_dialog():
     if yes.button("Yes", type="primary", use_container_width=True):
         if code == str(st.secrets["article"]["code"]):
             status.info("Saving article...")
-            save_article(title, author, st.session_state.input_article)
+            save_article(title.strip(), author.strip(), st.session_state.input_article.strip())
             status.success("Article saved successfully!")
             time.sleep(1)
             st.rerun()
