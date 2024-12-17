@@ -78,7 +78,7 @@ def save_article_dialog():
         st.rerun()
 
 
-st.set_page_config("Article 101", page_icon=":newspaper:", layout="wide")
+st.set_page_config("InstArticle 101", page_icon="📑", layout="wide")
 
 
 if "articles" not in st.session_state:
@@ -99,9 +99,10 @@ if "preview_article" not in st.session_state:
     st.session_state.preview_article = ""
 
 tab = option_menu(
-    "Article 101", 
+    "InstArticle 101",
+    menu_icon="journal-richtext",
     options=["Read", "Write"], 
-    icons=["book", "pencil"], 
+    icons=["book-half", "vector-pen"], 
     orientation="horizontal",
     styles={
         "menu-title": {
