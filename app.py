@@ -32,8 +32,21 @@ def get_articles_cache():
     return get_articles()
 
 def save_article(title, author, content):
-    ...
+    print("Saving article...")
+    print("Title is", title)
+    print("Author is", author)
+    client = get_gsheet_client()
+    sheet = client.open("Streamlit Article 101").sheet1
+    article_id = st.session_state.articles[-1]["Id"] + 1
+    sheet.append_row([article_id, title, author, content])
+    update_list()
 
+
+def get_article(article_id):
+    return [article for article in st.session_state.articles if article["Id"] == article_id][0]
+
+def update_list():
+    st.session_state.articles = get_articles()
 
 def show_article():
     st.session_state.display_article = article
@@ -50,8 +63,15 @@ def save_article_dialog():
     code = st.text_input("Enter secret code")
     yes, no = st.columns([1, 1])
     if yes.button("Yes", type="primary", use_container_width=True):
+        # if code == int(st.secrets["article"]["code"]):
         if code == "1234":
+            print("YESSS")
             status.info("Saving article...")
+            save_article(title, author, st.session_state.input_article)
+            # time.sleep(5)
+            status.success("Article saved successfully!")
+            time.sleep(2)
+            st.rerun()
         elif code and code != "1234":
             status.error("Invalid secret code")
     if no.button("No", use_container_width=True):
@@ -62,13 +82,14 @@ def save_article_dialog():
 
 st.set_page_config("Article 101", page_icon=":newspaper:", layout="wide")
 
-# get_articles_cache()
 
 if "articles" not in st.session_state:
     st.session_state.articles = get_articles_cache()
 
 # sidebar
-st.sidebar.title("Articles")
+article_heading, btn = st.sidebar.columns([3, 1], vertical_alignment="bottom")
+article_heading.title("Articles")
+btn.button("⟳", type="secondary", on_click=update_list)
 if "display_article" not in st.session_state:
     st.session_state.display_article = st.session_state.articles[0]["Id"]
 
@@ -95,8 +116,11 @@ tab = option_menu(
 
 if tab=="Read":
     container = st.container(border=True)
-    container.write("Read article here")
-    container.header(st.session_state.display_article)
+    article = get_article(st.
+    session_state.display_article)
+    container.title(article["Title"])
+    container.write(f"By **{article['Author']}**")
+    container.write(article["Content"])
 else:
     container = st.container(border=True)
     container.columns([1, 1, 1])[1].header("Write article here")
