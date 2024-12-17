@@ -52,7 +52,8 @@ def update_preview():
 @st.dialog("Save Article")
 def save_article_dialog():
     status = st.empty()
-    st.write(f'Are you sure want to save the article titled "**{title}**"?')
+    st.subheader(title)
+    st.write(f'Are you sure want to Publish this article?')
     code = st.text_input("Enter secret code")
     yes, no = st.columns([1, 1])
     if yes.button("Yes", type="primary", use_container_width=True):
@@ -133,4 +134,4 @@ else:
         st.header(title)
         st.markdown(st.session_state.input_article, unsafe_allow_html=True)
 
-    container.columns([1, 1, 1])[1].button("Save Article", key="save_article", type="primary", use_container_width=True, disabled=bool(not (st.session_state.input_article and title)),  on_click=save_article_dialog)
+    container.columns([1, 1, 1])[1].button("Publish Article", key="save_article", type="primary", use_container_width=True, disabled=bool(not (st.session_state.input_article and title)),  on_click=save_article_dialog)
