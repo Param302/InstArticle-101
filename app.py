@@ -62,7 +62,10 @@ else:
 
     with editor.container():
         st.subheader("Editor")
-        title = st.text_input("**Title**", key="title")
+        tt, at = st.columns([2, 1])
+
+        title = tt.text_input("**Title**", key="title")
+        author = at.text_input("**Your Name**", key="author")
         st.text_area("Write here",
                      label_visibility="collapsed",
                      height=500,
